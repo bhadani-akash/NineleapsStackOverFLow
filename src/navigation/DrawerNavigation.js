@@ -1,37 +1,49 @@
 import React from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Image,
-} from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
 
-import ActivityScreen from "../screens/ActivityScreen";
+import AppNav from "./AppNav";
 import EditProfile from "../screens/EditProfile";
-import TabNavigator from "./TabNavigator";
+import ActivityScreen from "../screens/ActivityScreen";
+import AdminStatistics from "../screens/AdminStatistics";
+import AdminScreen from "../screens/AdminScreen";
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigation = () => {
   return (
-    <NavigationContainer>
-      <Drawer.Navigator
-        openByDefault={false}
-        /* initialRouteName="edit"*/
-        drawerPosition="right"
-      >
-        <Drawer.Screen name="Back" component={TabNavigator} />
-        <Drawer.Screen name="Edit Profile" component={EditProfile} />
-        <Drawer.Screen name="Activity" component={ActivityScreen} />
-        <Drawer.Screen name="Admin Stats" component={ActivityScreen} />
-        <Drawer.Screen name="Logout" component={ActivityScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <Drawer.Navigator
+      //   openByDefault={false}
+      initialRouteName="App"
+      drawerPosition="right"
+      // drawerType="slide"
+    >
+      <Drawer.Screen
+        name="App"
+        component={AppNav}
+        options={{ title: "Back" }}
+      />
+      <Drawer.Screen
+        name="Edit"
+        component={EditProfile}
+        options={{ title: "Edit Profile" }}
+      />
+      {/* <Drawer.Screen
+        name="Activity"
+        component={ActivityScreen}
+        options={{ title: "Your Activity" }}
+      /> */}
+      {/* <Drawer.Screen
+        name="Admin"
+        component={AdminStatistics}
+        options={{ title: "Admin Statistics" }}
+      /> */}
+      <Drawer.Screen
+        name="Admin"
+        component={AdminScreen}
+        options={{ title: "Admin Statistics" }}
+      />
+      {/* <Drawer.Screen name="Logout" component={ActivityScreen} /> */}
+    </Drawer.Navigator>
   );
 };
 export default DrawerNavigation;

@@ -1,69 +1,48 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
-import TabNavigator from "./src/navigation/TabNavigator";
 
-// import {
-//   Header,
-//   LearnMoreLinks,
-//   Colors,
-//   DebugInstructions,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
-import Badge from "./src/components/Badge";
-import Header from "./src/components/Header";
-import UserDetails from "./src/components/UserDetails";
-import UserTagsSubscriptions from "./src/components/UserTagsSubscriptions";
-import UserTopQuestionAnswer from "./src/components/UserTopQuestionAnswer";
-import UserTotalVotesQuestionAnswer from "./src/components/UserTotalVotesQuestionAnswer";
-import GoogleSSOScreen from "./src/screens/GoogleSSOScreen";
-import HomeScreen from "./src/screens/HomeScreen";
-import MyProfileScreen from "./src/screens/MyProfileScreen";
-import TagScreen from "./src/screens/TagScreen";
-import SwitchNavigation from "./src/navigation/SwitchNavigation";
+import store from "./src/redux/store";
 import DrawerNavigation from "./src/navigation/DrawerNavigation";
+import AuthNav from "./src/navigation/AuthNav";
 
 const App = () => {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const getData = async () => {
+    try {
+      const checkToken = await AsyncStorage.getItem("userToken");
+      // console.log("Stored token:", JSON.parse(checkToken));
+      // const checkUser = await AsyncStorage.getItem("userData");
+      // console.log(JSON.parse(checkUser));
+      if (checkToken !== null) {
+        setIsSignedIn(true);
+      } else {
+        setIsSignedIn(false);
+      }
+    } catch (error) {
+      console.log("Token retrieval Fail:", error);
+    }
+  };
+  getData();
+
   return (
-    // <StatusBar barStyle="dark-content" />
-    <View style={styles.Container}>
-      {/* <Text>Hello</Text> */}
-      {/* <UserDetails /> */}
-      {/* <Badge /> */}
-      {/* <UserTotalVotesQuestionAnswer /> */}
-      {/* <UserTopQuestionAnswer /> */}
-      {/* <UserTagsSubscriptions /> */}
-      {/* <GoogleSSOScreen /> */}
-      {/* <Header /> */}
-      {/* <NavigationContainer>
-        <TabNavigator /> */}
-      {/* <DrawerNavigation /> */}
-      {/* </NavigationContainer> */}
-      <DrawerNavigation />
-      {/* <SwitchNavigation /> */}
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <NavigationContainer>
+          {isSignedIn ? <DrawerNavigation /> : <AuthNav />}
+        </NavigationContainer>
+      </View>
+    </Provider>
   );
 };
 
 const styles = StyleSheet.create({
-  Container: {
+  container: {
     flex: 1,
-    backgroundColor: "#c1def5",
+    // backgroundColor: "#c1def5",
   },
 });
 

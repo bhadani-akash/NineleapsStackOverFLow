@@ -1,23 +1,35 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, { useEffect } from "react";
+import { FlatList, View } from "react-native";
+import { connect } from "react-redux";
 
-const TagScreen = () => {
+import Header from "../components/Header";
+import TagCard from "../components/tags/TagCard";
+import { getAllTags } from "../redux/actions/tagsScreen/getAllTagsAction";
+
+const TagScreen = ({ getAllTags, allTags, subscribedTags }) => {
+  useEffect(() => {
+    getAllTags();
+  }, [subscribedTags]);
+
   return (
-    <View style={style.container}>
-      <Text>You are on Tags Screen</Text>
-    </View>
+    <>
+      <Header />
+      <FlatList
+        ListHeaderComponent={<View style={{ padding: 7.5 }} />}
+        data={allTags.tags}
+        keyExtractor={(item) => item._id.toString()}
+        renderItem={(item) => {
+          return <TagCard data={item} />;
+        }}
+      />
+    </>
   );
 };
 
-export default TagScreen;
-
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    // margin: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // backgroundColor: '#ff9e3d',
-    // backgroundColor: "#fff",
-  },
-});
+const mapStateToProps = (state) => {
+  return {
+    allTags: state.getAllTagsState,
+    subscribedTags: state.subscribedTagState,
+  };
+};
+export default connect(mapStateToProps, { getAllTags })(TagScreen);

@@ -4,39 +4,140 @@ import {
   Text,
   TextInput,
   View,
-  TouchableOpacity,
   Button,
-  Platform,
   Image,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
-// import ImagePicker from "react-native-image-crop-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ImagePicker from "react-native-image-crop-picker";
+import Entypo from "react-native-vector-icons/Entypo";
 
-const EditProfile = () => {
-  const PickImage = () => {
+import { connect } from "react-redux";
+import { updateUserProfile } from "../redux/actions/userProfileAction";
+
+const EditProfile = ({ updateUserProfile, navigation }) => {
+  let authUserData = null;
+  const [id, setId] = useState();
+  const [designation, setDesignation] = useState();
+  const [bio, setBio] = useState();
+  const [pickImg, setPickImg] = useState();
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        let jsonValue = await AsyncStorage.getItem("userData");
+        jsonValue = JSON.parse(jsonValue);
+        setId(jsonValue._id);
+      } catch (e) {
+        console.log("Display User Data Error:", e);
+      }
+    };
+    getData();
+  }, [id]);
+
+  const goToPickImage = () => {
     ImagePicker.openPicker({
       width: 120,
       height: 120,
       cropping: true,
-    }).then((image) => {
-      console.log(image);
-    });
+      includeBase64: true,
+    })
+      .then((image) => {
+        setPickImg(`data:${image.mime};base64,${image.data}`);
+      })
+      .catch((error) => {
+        console.log("Image selection error:", error);
+      });
   };
 
-  // render() {
+  // const handleServerData = async () => {
+  //   try {
+  //     await AsyncStorage.setItem("userData", JSON.stringify(authUserData));
+  //     // setName();
+  //     setDesignation();
+  //     setBio();
+  //     setPickImg();
+  //     Alert.alert("Edit Profile", "Profile Updated!");
+  //     navigation.goBack();
+  //   } catch (error) {
+  //     console.log("Data Storage Error:", error);
+  //   }
+  // };
+
+  const submitDataToServer = () => {
+    const data = {
+      designation: designation,
+      shortbio: bio,
+      photo: pickImg,
+    };
+    updateUserProfile(id, data);
+    setDesignation();
+    setBio();
+    setPickImg();
+    Alert.alert("Edit Profile", "Profile Updated!");
+    navigation.goBack();
+    // fetch(`${Ngrok.url}/api/users/${id}`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     // name: name,
+    //     designation: designation,
+    //     shortbio: bio,
+    //     photo: pickImg,
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     console.log("ser res", responseJson);
+    //     authUserData = responseJson;
+    //     handleServerData();
+    //   })
+    //   .catch((err) => {
+    //     console.log("Set User Data Failed:", err);
+    //   });
+  };
+
   return (
-    <View style={styles.container}>
-      {/* <View style={{ alignItems: "center" }}> */}
-      <Text style={styles.heading}>Edit Profile</Text>
-      {/* </View> */}
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Name</Text>
-        <TextInput style={styles.textField} placeholder="Enter your Name" />
+    <ScrollView style={styles.container}>
+      <View style={styles.headingContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            // setName();
+            setDesignation();
+            setBio();
+            setPickImg();
+            // Alert.alert("Edit Profile", "Cancelled");
+            navigation.goBack();
+          }}
+        >
+          <Entypo name="cross" size={60} color="black" style={styles.logo} />
+        </TouchableOpacity>
+        <Text style={styles.heading}>Edit Profile</Text>
+        <TouchableOpacity
+          onPress={() => {
+            if ((designation || bio || pickImg) == undefined) {
+              Alert.alert("Edit Profile", "Feilds can't be empty.");
+            } else {
+              submitDataToServer();
+            }
+          }}
+        >
+          <Entypo name="check" size={50} color="black" style={styles.logo} />
+        </TouchableOpacity>
       </View>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Designation</Text>
         <TextInput
           style={styles.textField}
+          autoCapitalize="characters"
           placeholder="Enter your Designation"
+          value={designation}
+          onChangeText={(designation) => setDesignation(designation)}
         />
       </View>
       <View style={styles.innerContainer}>
@@ -44,35 +145,50 @@ const EditProfile = () => {
         <TextInput
           style={styles.textField}
           multiline={true}
+          autoCapitalize="sentences"
           placeholder="Write a short bio."
+          value={bio}
+          onChangeText={(bio) => setBio(bio)}
         />
       </View>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Add your Profile Image:</Text>
-        <Button
-          title="Choose Image"
-          onPress={() => PickImage()}
-          //   color="#841584"
-        />
-        {/* {image && (
-          <Image soure={{ uri: image }} style={{ width: 100, height: 100 }} />
-        )} */}
+        <Text style={styles.title}>Select Profile Image</Text>
+        <Button title="Choose Image" onPress={() => goToPickImage()} />
+        {pickImg == undefined ? null : (
+          <View style={styles.showImgContainer}>
+            <Text style={{ paddingBottom: 10 }}>Selected Image:</Text>
+            <Image source={{ uri: pickImg }} style={styles.showImg} />
+          </View>
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
-// }
-export default EditProfile;
+
+export default connect(null, { updateUserProfile })(EditProfile);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    backgroundColor: "#fff",
+  },
+  headingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    // backgroundColor: "cyan",
   },
   heading: {
-    fontSize: 50,
+    fontSize: 40,
+    fontWeight: "bold",
     textAlign: "center",
+    // color: "grey",
     // backgroundColor: "pink",
+  },
+  logo: {
+    // backgroundColor: "grey",
   },
   innerContainer: {
     paddingVertical: 20,
@@ -95,73 +211,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     // backgroundColor: "white",
   },
-  // textArea: {
-  //   paddingHorizontal: 10,
-  //   paddingVertical: 5,
-  //   fontSize: 20,
-  //   // marginBottom: 100,
-  //   backgroundColor: "white",
-  //   borderColor: "black",
-  //   borderWidth: 1,
-  // },
-  //   container: {
-  //     backgroundColor: "#5E5C5C",
-  //     paddingTop: 20,
-  //     paddingBottom: 20,
-  //     paddingEnd: 30,
-  //     padding: 10,
-  //     flexDirection: "row",
-  //     alignItems: "center",
-  //     justifyContent: "space-between",
-  //   },
-  //   totalVotes: {
-  //     height: 40,
-  //     borderColor: "gray",
-  //     borderWidth: 1,
-  //   },
+  showImg: {
+    height: 240,
+    width: 240,
+  },
+  showImgContainer: {
+    paddingVertical: 20,
+    alignItems: "center",
+    // backgroundColor: "yellow",
+  },
 });
-// import React, { Component } from "react";
-// import { Text, StyleSheet, View, TextInput } from "react-native";
-// export default class EditProfileScreen extends Component {
-//   render() {
-//     return (
-//       <View style={Styles.root}>
-//         <Text style={Styles.heading}>Edit Profile</Text>
-//         <Text style={Styles.innerContainerHeading}>Name</Text>
-//         <TextInput style={Styles.textInput} placeholder="Enter Full Name" />
-//         <Text style={Styles.innerContainerHeading}>Designation</Text>
-//         <TextInput
-//           style={Styles.textInput}
-//           placeholder="Enter your Designation"
-//         />
-//         <Text style={Styles.innerContainerHeading}>Bio:</Text>
-//         <TextInput style={Styles.textInput} placeholder="Write a Short Bio." />
-//       </View>
-//     );
-//   }
-// }
-// const Styles = StyleSheet.create({
-//   container: {
-//     // padding: 10,
-//   },
-//   heading: {
-//     paddingTop: 20,
-//     paddingBottom: 30,
-//     // backgroundColor: "blue",
-//     // justifyContent: "center",
-//     // flex: 1,
-//     // alignItems: "center",
-//   },
-//   innerContainer: {
-//     backgroundColor: "pink",
-//     // padding: 20,
-//   },
-//   innerContainerHeading: {
-//     fontSize: 30,
-//     padding: 10,
-//   },
-//   textInput: {
-//     // padding: 10,
-//     borderWidth: 2,
-//   },
-// });

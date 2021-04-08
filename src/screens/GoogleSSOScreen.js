@@ -1,23 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Dimensions, StyleSheet, StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, Dimensions, StyleSheet, Alert } from "react-native";
 import * as Animatable from "react-native-animatable";
 import {
   GoogleSignin,
   GoogleSigninButton,
-  statusCodes,
 } from "@react-native-community/google-signin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Ngrok from "../constants/Ngrok";
 
 const GoogleSSOScreen = ({ navigation }) => {
+  let authUserToken = null;
+  let authUserData = null;
+
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
         "428571631215-e11rkg17s9qilcj9hmqp9ml1p38sufcl.apps.googleusercontent.com",
-      // iosClientId: '', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
     });
   });
-  //   , []);
+
+  const handleServerData = async () => {
+    try {
+      await AsyncStorage.setItem("userToken", JSON.stringify(authUserToken));
+      await AsyncStorage.setItem("userData", JSON.stringify(authUserData));
+      navigation.navigate("MainApp");
+    } catch (error) {
+      console.log("Data Storage Error:", error);
+    }
+  };
 
   const googleLogin = async () => {
     try {
@@ -27,9 +38,6 @@ const GoogleSSOScreen = ({ navigation }) => {
       if (!userInfo) {
         console.log("Data Found:", !userInfo);
       } else {
-        // console.log("Data:", userInfo);
-        console.log("Logged-in:", userInfo.user.name);
-
         fetch(`${Ngrok.url}/api/login`, {
           method: "POST",
           headers: {
@@ -39,32 +47,41 @@ const GoogleSSOScreen = ({ navigation }) => {
           body: JSON.stringify(userInfo),
         })
           .then((response) => {
-            // console.log(response);
             return response.json();
           })
           .then((responseJson) => {
-            console.log(responseJson);
-            if (responseJson.access == true) {
-              //alert("Login Sucessful")
-              console.log("Navigation success");
+            if (responseJson.access === true) {
+              authUserToken = responseJson.token;
+              authUserData = responseJson.user;
+              handleServerData();
             } else {
-              alert("Login failed");
+              console.log(responseJson);
+              Alert.alert("NineleapsStackOverFlow", "Access Denied");
             }
-            // navigation.navigate("App");
           })
           .catch((err) => {
             console.log("Server Error:", err);
           });
       }
     } catch (error) {
-      console.log("Login Error:", error);
+      if (error.message == "Sign in action cancelled") {
+        Alert.alert("NineleapsStackOverFlow", "Sign-in cancelled");
+      } else if (
+        error.message == "A non-recoverable sign in failure occurred"
+      ) {
+        Alert.alert(
+          "NineleapsStackOverFlow",
+          "Sign-in with Nineleaps Email ID"
+        );
+      } else {
+        console.log("Login Error:", error.message);
+        Alert.alert("NineleapsStackOverFlow", "Something went wrong!");
+      }
     }
   };
 
-  // render() {
   return (
     <View style={styles.Container}>
-      {/* <StatusBar backgroundColor="#009387" barStyle="light-content" /> */}
       <View style={styles.header}>
         <Animatable.Image
           animation="bounceIn"
@@ -87,7 +104,6 @@ const GoogleSSOScreen = ({ navigation }) => {
     </View>
   );
 };
-// }
 
 export default GoogleSSOScreen;
 
@@ -99,6 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#c1def5",
   },
   header: {
     flex: 2,
