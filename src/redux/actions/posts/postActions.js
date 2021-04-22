@@ -51,8 +51,8 @@ import Ngrok from "../../../constants/Ngrok";
 //get all question
 export const getposts = (page) => {
   // console.log("get all questions action");
-  console.log("page", page);
-  console.log(`${Ngrok.url}/api/question/?page=${page}`);
+  // console.log("page", page);
+  // console.log(`${Ngrok.url}/api/question/?page=${page}`);
   return async (dispatch) => {
     try {
       dispatch(fetchpostsRequest());
@@ -67,7 +67,7 @@ export const getposts = (page) => {
         `${Ngrok.url}/api/question/?page=${page}`,
         config
       );
-      console.log("backend_data", post.data);
+      // console.log("backend_data", post.data);
       dispatch(fetchpostsSuccess(post.data));
     } catch (error) {
       // error.message is the error message

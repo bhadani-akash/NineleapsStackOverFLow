@@ -6,6 +6,8 @@ import {
   Button,
   ScrollView,
   ActivityIndicator,
+  TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -31,6 +33,7 @@ const AdminDashboard = ({ navigation, adminCountData, countData }) => {
       <ScrollView
         style={{
           flex: 1,
+          backgroundColor: "#fff",
         }}
       >
         <View
@@ -47,25 +50,63 @@ const AdminDashboard = ({ navigation, adminCountData, countData }) => {
               fontSize: 20,
             }}
           >
-            Welcome to your admin dashboard
+            Welcome to your Admin Dashboard
           </Text>
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-evenly",
-              margin: 10,
+              justifyContent: "space-between",
+              marginHorizontal: 20,
             }}
           >
-            <Button
+            <TouchableOpacity
+              style={{ borderWidth: 1 }}
               onPress={() =>
                 navigation.navigate("Table", { data: countData.adminCountData })
               }
-              title="Tables"
-            />
-            <Button
+            >
+              <ImageBackground
+                source={require("../../assets/Table.png")}
+                style={{
+                  height: 70,
+                  width: 150,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    textAlign: "center",
+                    fontSize: 20,
+                  }}
+                >
+                  TABLES
+                </Text>
+              </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ borderWidth: 1 }}
               onPress={() => navigation.navigate("Analytics")}
-              title="Analytics"
-            />
+            >
+              <ImageBackground
+                source={require("../../assets/Graph.jpg")}
+                style={{
+                  height: 70,
+                  width: 150,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    textAlign: "center",
+                    fontSize: 20,
+                  }}
+                >
+                  ANALYTICS
+                </Text>
+              </ImageBackground>
+            </TouchableOpacity>
           </View>
         </View>
         <StatsReport data={countData.adminCountData} />

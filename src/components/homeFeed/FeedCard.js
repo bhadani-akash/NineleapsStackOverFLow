@@ -16,7 +16,7 @@ import ViewProfile from "../tags/ViewProfile";
 const FeedCard = (props) => {
   const [modal, setModal] = useState(false);
   const [viewProfileModal, setViewProfileModal] = useState(false);
-  // console.log("Inside Ques:", props.data.item.tags);
+  // console.log("Inside Ques:", props.data.item);
 
   const route = {
     params: {
@@ -27,7 +27,7 @@ const FeedCard = (props) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          {console.log(props.data.item.user)}
+          {/* {console.log(props.data.item)} */}
           <Ionicons name="person" size={14} color="black" />
           {/* <Image
             source={{

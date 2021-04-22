@@ -11,7 +11,7 @@ const StatsReport = (props) => {
         padding: 10,
       }}
     >
-      <Text style={{ fontSize: 25, padding: 10 }}>Stats Report</Text>
+      <Text style={{ fontSize: 25, padding: 10 }}>Statistics and Summary</Text>
       <View style={styles.countCard}>
         <Text style={styles.cardHeader}>Total Questions</Text>
         <Text style={styles.cardData}>{props.data.totalques}</Text>

@@ -28,6 +28,10 @@ import searchReducer from "./reducers/searchReducer";
 //admin
 import adminCountDataReducer from "./reducers/admin/adminCountDataReducer";
 import adminAnalyticsDataReducer from "./reducers/admin/adminAnalyticsDataReducer";
+import adminAnalyticsFindReducer from "./reducers/admin/adminAnalyticsFindReducer";
+
+//notification
+import inAppNotificationReducer from "./reducers/notification/inAppNotificationReducer";
 
 const middleWares = [thunk];
 
@@ -61,6 +65,10 @@ const reducer = combineReducers({
   //admin
   adminCountDataState: adminCountDataReducer,
   adminAnalyticsDataState: adminAnalyticsDataReducer,
+  adminAnalyticsFindState: adminAnalyticsFindReducer,
+
+  //notification
+  inAppNotificationState: inAppNotificationReducer,
 });
 
 const store = createStore(reducer, applyMiddleware(...middleWares));

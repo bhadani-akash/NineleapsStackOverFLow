@@ -7,7 +7,7 @@ import UserMostQuesTable from "./tables/UserMostQuesTable";
 import UserMostAnsTable from "./tables/UserMostAnsTable";
 
 const MainReport = (props) => {
-  console.log(props);
+  // console.log(props);
   return (
     <>
       {props.data == undefined ? null : (

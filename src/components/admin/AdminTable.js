@@ -14,7 +14,7 @@ const AdminTable = ({ route }) => {
 
   const [tableName, setTableName] = useState("Top Voted Questions");
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <DropDownPicker
         items={[
           { label: "Top Voted Questions", value: "Top Voted Questions" },
@@ -32,7 +32,7 @@ const AdminTable = ({ route }) => {
         defaultValue={tableName}
         containerStyle={{
           height: 40,
-          marginVertical: 10,
+          marginVertical: 15,
           marginHorizontal: 40,
         }}
         dropDownMaxHeight={200}

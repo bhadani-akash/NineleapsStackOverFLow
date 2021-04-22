@@ -7,6 +7,7 @@ import TagCard from "../components/tags/TagCard";
 import { getAllTags } from "../redux/actions/tagsScreen/getAllTagsAction";
 
 const TagScreen = ({ getAllTags, allTags, subscribedTags }) => {
+  console.log(allTags);
   useEffect(() => {
     getAllTags();
   }, [subscribedTags]);

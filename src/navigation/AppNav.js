@@ -8,6 +8,8 @@ import NotificationScreen from "../screens/NotificationScreen";
 import MyProfileScreen from "../screens/MyProfileScreen";
 import AskAQuestionLabel from "../components/homeFeed/AskAQuestionLabel";
 
+import NotificationStack from "./NotificationStack";
+
 const Tab = createBottomTabNavigator();
 
 const AppNav = () => {
@@ -26,17 +28,17 @@ const AppNav = () => {
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
           }
+          // else if (route.name === "Search") {
+          //   iconName = focused ? "search" : "search-outline";
+          // }
           return <Ionicons name={iconName} size={30} color={color} />;
         },
       })}
       tabBarOptions={{
         activeTintColor: "black",
         inactiveTintColor: "black",
-        // activeTintColor: "white",
-        // inactiveTintColor: "white",
         style: {
           backgroundColor: "#c1def5",
-          // backgroundColor: "black",
           // padding: 5,
           // paddingVertical: 20,
           // flex: 0.07,
@@ -45,8 +47,9 @@ const AppNav = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Tags" component={TagScreen} />
-      {/* <Tab.Screen name="Add" component={AskAQuestionLabel} /> */}
-      <Tab.Screen name="Notification" component={NotificationScreen} />
+      {/* <Tab.Screen name="Search" component={AskAQuestionLabel} /> */}
+      {/* <Tab.Screen name="Notification" component={NotificationScreen} /> */}
+      <Tab.Screen name="Notification" component={NotificationStack} />
       <Tab.Screen name="Profile" component={MyProfileScreen} />
     </Tab.Navigator>
   );

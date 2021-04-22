@@ -12,8 +12,8 @@ import AskAQuestionLabel from "../components/homeFeed/AskAQuestionLabel";
 import { getposts } from "../redux/actions/posts/postActions";
 
 const HomeScreen = ({ getposts, Posts, newQuestionProp }) => {
-  console.log("all posts", Posts.posts);
-  console.log("new ques", newQuestionProp);
+  // console.log("all posts", Posts.posts);
+  // console.log("new ques", newQuestionProp);
   const [feedData, setFeedData] = useState([]);
 
   const [page, setPage] = useState(1);

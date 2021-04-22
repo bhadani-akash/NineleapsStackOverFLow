@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'com.google.gms.google-services'
 import com.android.build.OutputFile
 
 /**
@@ -183,8 +183,12 @@ android {
 }
 
 dependencies {
-implementation 'com.android.support:multidex:1.0.3' //added line no 186 for "react-native-webview" error on 15.03.21
+// implementation 'com.android.support:multidex:1.0.3' //added line no 186 for "react-native-webview" error on 15.03.21
 
+  implementation 'androidx.multidex:multidex:2.0.1'  // <-- ADD THIS DEPENDENCY
+
+implementation platform('com.google.firebase:firebase-bom:27.0.0')
+implementation 'com.google.firebase:firebase-analytics'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
